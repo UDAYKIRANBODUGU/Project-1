@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<style>
+	body {
+			background-color: #f8f9fa;
+		}
+
+		.container {
+			margin-top: 20px;
+		}
+
+		.btn-add-enquiry {
+			margin-bottom: 20px;
+		}
+
+		table {
+			width: 100%;
+			margin-top: 20px;
+		}
+
+		th,
+		td {
+			text-align: center;
+			padding: 10px;
+		}
+
+		th {
+			background-color: #007bff;
+			color: white;
+		}
+
+		.table-bordered {
+			border: 1px solid #dee2e6;
+		}
+
+		.table-bordered th,
+		.table-bordered td {
+			border: 1px solid #dee2e6;
+		}
+
+		.table-bordered thead th,
+		.table-bordered thead td {
+			border-bottom-width: 2px;
+		}
+
+		.search-form {
+			margin-bottom: 20px;
+			padding: 20px;
+			border: 1px solid #dee2e6;
+			border-radius: 10px;
+			background-color: #ffffff;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+
+		.search-btn {
+			margin-top: 10px;
+		}
+
+		.btn-add-enquiry {
+			margin-top: 20px;
+		}
+
+		body {
+			background-color: rgb(206, 201, 198);
+		}
+
+		.dashboard-content {
+			margin: 100px;
+		}
+
+		.navbar {
+			background-color: rgba(0, 0, 0, 0.5);
+			color: white;
+			padding: 10px;
+		}
+
+		.navbar ul {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+		}
+
+		.navbar li {
+			display: inline;
+			margin-left: 20px;
+			/* Adjusted margin for better spacing */
+		}
+
+		.navbar a {
+			color: white;
+			text-decoration: none;
+			font-weight: bold;
+		}
+
+		.navbar a:hover {
+			color: #ffd700;
+			/* Change color on hover as desired */
+		}
+
+	
+</style>
+
+<body>
+	<div class="navbar ">
+		<ul>
+			<li><a href="/">Home </a></li>
+
+			<li><a href="enquiry"> AddEnquirys </a></li>
+
+			<li><a href="enquires"> viewEnquirys</a></li>
+
+			<!-- Add more navigation links as needed -->
+		</ul>
+		<a href="/" class="btn btn-danger" mt-3>Logout</a>
+	</div>
+
+
+    <div class="container">
+        
+
+        <form id="filterForm" th:action="@{/filter-enquires}" method="post" th:object="${s}">
+            <table>
+                <tr>
+                    <td>Class Mode : </td>
+                    <td><select th:field="*{classmode}" id="classmode" class="form-select">
+                            <option value="">-Select-</option>
+							<option value="Online">Online</option>
+							<option value="Classroom">Classroom</option>
+
+                        </select>
+                    </td>
+
+                    <td>Course : </td>
+                    <td><select th:field="*{course}" id="course" class="form-select">
+                            <option value="">-Select-</option>
+							<option value="JAVA FULL STACK">JAVA FULL STACK</option>
+							<option value="PYTHON FULL STACK">PYTHON FULL STACK</option>
+							<option value="SPRING BOOT & MICROSERVICES">SPRING BOOT &amp; MICROSERVICES</option>
+                        </select>
+                    </td>
+
+                    <td>Status : </td>
+                    <td><select th:field="*{Eniquirystatus}" id="Eniquirystatus" class="form-select">
+                            <option value="">-Select-</option>
+							<option value="New">New </option>
+							<option value="Enrolled">Enrolled</option>
+							<option value="Lost">Lost</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <div id="filterTable"></div>
+        <table class="table table-bordered" id="enqTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Phno</th>
+                    <th>Course Name</th>
+                    <th>Class Mode</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="se : ${enquires}">
+                    <td th:text="${se.name}"></td>
+                    <td th:text="${se.phno}"></td>
+                    <td th:text="${se.course}"></td>
+                    <td th:text="${se.classmode}"></td>
+                    <td th:text="${se.status}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('.form-select').on("change", function () {
+                event.preventDefault();  
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/filter-enquires',  
+                    data: $('#filterForm').serialize(), 
+                    success: function (result) {
+						$("#enqTable").hide();
+                        $("#filterTable").html(result);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX error:", textStatus, errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
