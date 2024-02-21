@@ -1,2 +1,1 @@
-# Mini_Project-JRTP-01
-# UDAY
+# Project-1
